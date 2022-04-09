@@ -1,0 +1,214 @@
+openapi: 3.0.0
+info:
+  title: URL-Shortener
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+  description: Local Deployment
+paths:
+  /:
+    get:
+      summary: Get all keys
+      operationId: root_get
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShortenedUrl'
+                x-content-type: application/json
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    post:
+      summary: Generate shortened url
+      operationId: root_post
+      requestBody:
+        $ref: '#/components/requestBodies/CreateShortUrlRequest'
+      responses:
+        "201":
+          description: shortenedId is generated
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ShortenedUrl'
+        "400":
+          description: Bad request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: invalid request body
+        "500":
+          description: "Internal Error, Try again later."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Internal Error, Try again later."
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    delete:
+      summary: Delete all keys
+      operationId: root_delete
+      responses:
+        "404":
+          description: Successful delete operation
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /{url_id}:
+    get:
+      summary: Redirect to Original Url
+      description: Redirect and count number of redirections.
+      operationId: id_get
+      parameters:
+      - name: url_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "301":
+          description: Redirect to the Original Url
+        "404":
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "shortenedId {as1sW123} is not found"
+        "500":
+          description: "Internal Error, Try again later."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Internal Error, Try again later."
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    put:
+      summary: Update Url
+      operationId: id_put
+      requestBody:
+        $ref: '#/components/requestBodies/CreateShortUrlRequest'
+      parameters:
+      - name: url_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Updated successfully
+        "400":
+          description: Bad request
+        "404":
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "shortenedId {as1sW123} is not found"
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    delete:
+      summary: Delete shortened id
+      operationId: id_delete
+      parameters:
+      - name: url_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: ShortenedUrl was deleted successfully.
+        "404":
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "shortenedId {as1sW123} is not found"
+        "500":
+          description: "Internal Error, Try again later."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Internal Error, Try again later."
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+components:
+  schemas:
+    ShortenedUrl:
+      required:
+      - originalUrl
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        originalUrl:
+          type: string
+          description: Valid URL thah should be shortened.
+          example: http://www.google.com
+        shortenedUrl:
+            type: string
+            description: Valid URL thah should be shortened.
+            example: rb.gy/lw5hsi
+      example:
+        id: 123e4567-e89b-12d3-a456-426614174000
+        originalUrl: http://www.google.com
+        shortenedUrl: rb.gy/lw5hsi
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+  responses:
+    BadRequest:
+      description: Bad request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: invalid request body
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "shortenedId {as1sW123} is not found"
+    InternalError:
+      description: "Internal Error, Try again later."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "Internal Error, Try again later."
+  requestBodies:
+    CreateShortUrlRequest:
+      description: A JSON object containing URL information
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ShortenedUrl'
+      required: true
+

@@ -1,0 +1,8 @@
+connexion == 2.6.0
+python_dateutil == 2.6.0
+setuptools >= 21.0.0
+
+Flask~=2.1.1
+six~=1.16.0
+tinydb~=4.7.0
+shortuuid~=1.0.8
