@@ -50,6 +50,7 @@ def redirect_to_full_by_id(url_id=None):
 def get_all():
     return url_db.all()
 
+# TODO: mention in the report alternative way of validation
 
 def update_by_id(url_id=None, new_url=None):
     queries = []
@@ -65,8 +66,8 @@ def update_by_id(url_id=None, new_url=None):
     if not is_valid_URL(new_url.original_url):
         return 'Invalid Url', 400
 
-    ShortenedUrl = Query()
-    url_db.update({'original_url': new_url.original_url, 'shortened_url': shortuuid.ShortUUID().random(length=7)}, ShortenedUrl.url_id == url_id)
+    shortened_url = Query()
+    url_db.update({'original_url': new_url.original_url, 'shortened_url': shortuuid.ShortUUID().random(length=7)}, shortened_url.url_id == url_id)
 
     return url
 

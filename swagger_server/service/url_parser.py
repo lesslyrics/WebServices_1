@@ -1,4 +1,5 @@
 import re
+from urllib.parse import urlparse
 
 
 def is_valid_URL(url):
@@ -11,10 +12,18 @@ def is_valid_URL(url):
 
     p = re.compile(regex)
 
-    if url == None:
+    if url is None:
         return False
 
     if re.search(p, url):
         return True
     else:
+        return False
+
+
+def is_valid_URL_alternative(url):
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc, result.path])
+    except:
         return False
