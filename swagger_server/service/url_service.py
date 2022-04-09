@@ -4,6 +4,7 @@ import tempfile
 import shortuuid
 from tinydb import TinyDB, Query
 from tinydb.operations import delete
+from flask import Flask, redirect
 
 from tinydb.middlewares import CachingMiddleware
 from functools import reduce
@@ -33,17 +34,17 @@ def add(url=None):
     return url.url_id
 
 
-def get_by_id(url_id=None, newUrl=None):
+def redirect_to_full_by_id(url_id=None):
     queries = []
     query = Query()
     queries.append(query.url_id == url_id)
     query = reduce(lambda a, b: a & b, queries)
     url = url_db.search(query)
 
-    # url = url_db.get(doc_id=int(url_id))
     if not url:
         return 'not found', 404
-    return url
+    return redirect(url[0]['original_url'], code=301)
+
 
 def get_all():
     return url_db.all()

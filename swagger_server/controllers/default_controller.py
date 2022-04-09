@@ -28,8 +28,7 @@ def id_get(url_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'redirect_to_full_by_id(id)'
-    # return redirect_to_full_by_id(url_id)
+    return redirect_to_full_by_id(url_id)
 
 
 def id_put(body, url_id):  # noqa: E501
