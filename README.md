@@ -22,4 +22,4 @@ docker run aboshchenko/flask-restapi:latest
 ```
 
 ## Testing
-Test are located in the /test/test_default_controller.py file.
+Tests are located in the /test/test_default_controller.py file.
