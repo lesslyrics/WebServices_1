@@ -1,3 +1,4 @@
+import json
 import os
 import tempfile
 
@@ -32,7 +33,7 @@ def add(url=None):
     url.url_id = str(uuid.uuid4())
     url.shortened_url = short_url
     url_db.insert(url.to_dict())
-    return url.url_id
+    return url.url_id, 201
 
 
 def redirect_to_full_by_id(url_id=None):
@@ -48,7 +49,14 @@ def redirect_to_full_by_id(url_id=None):
 
 
 def get_all():
-    return url_db.all()
+    query = Query()
+
+    return json.dumps([{'url_id': query.get('url_id')} for query in url_db.search(query.url_id.exists())])
+
+
+    # a =   [{arr.append((data['url_id'] = query.get('url_id')))} for query in url_db.search(query.url_id.exists())]
+
+    # return url_db.all()
 
 # TODO: mention in the report alternative way of validation
 
@@ -59,18 +67,16 @@ def update_by_id(url_id=None, new_url=None):
     query = reduce(lambda a, b: a & b, queries)
     url = url_db.search(query)
 
-    # url = url_db.get(doc_id=int(url_id))
     if not url:
         return 'Not found', 404
 
     if not is_valid_URL(new_url.original_url):
         return 'Invalid Url', 400
 
-    shortened_url = Query()
     url_db.update({'original_url': new_url.original_url,
-                   'shortened_url': shorten_url(new_url.original_url)}, shortened_url.url_id == url_id)
+                   'shortened_url': shorten_url(new_url.original_url)}, query)
 
-    return url
+    return url_db.search(query)
 
 
 def delete_by_id(url_id):
@@ -84,5 +90,5 @@ def delete_by_id(url_id):
 
 def delete_all():
     url_db.drop_tables()
-    return 'Delete successful'
+    return 'Delete successful', 404
 
