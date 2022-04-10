@@ -52,13 +52,7 @@ def get_all():
     query = Query()
 
     return json.dumps([{'url_id': query.get('url_id')} for query in url_db.search(query.url_id.exists())])
-
-
-    # a =   [{arr.append((data['url_id'] = query.get('url_id')))} for query in url_db.search(query.url_id.exists())]
-
     # return url_db.all()
-
-# TODO: mention in the report alternative way of validation
 
 def update_by_id(url_id=None, new_url=None):
     queries = []
