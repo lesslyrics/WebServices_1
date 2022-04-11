@@ -1,5 +1,4 @@
 import re
-import pyshorteners as pyshorteners
 from urllib.parse import urlparse
 
 #  Compile pattern only once
@@ -29,8 +28,3 @@ def is_valid_URL_alternative(url):
         return all([result.scheme, result.netloc, result.path])
     except:
         return False
-
-
-def shorten_url(url):
-    type_tiny = pyshorteners.Shortener()
-    return type_tiny.tinyurl.short(url)

@@ -2,13 +2,12 @@ import json
 import os
 import tempfile
 
-import shortuuid
 from tinydb import TinyDB, Query
-from flask import Flask, redirect
+from flask import  redirect
 from functools import reduce
 from shortuuid import *
 import uuid
-from swagger_server.service.url_utils import is_valid_URL, shorten_url
+from swagger_server.service.url_utils import is_valid_URL
 
 db_dir_path = tempfile.gettempdir()
 db_file_path = os.path.join(db_dir_path, "urls.json")
@@ -27,10 +26,7 @@ def add(url=None):
     res = url_db.search(query)
     if res:
         return 'Url already exists', 409
-
-    short_url = shorten_url(url.original_url)
-    url.url_id = str(uuid.uuid4())
-    url.shortened_url = short_url
+    url.url_id = str(uuid.uuid4())[0:8]
     url_db.insert(url.to_dict())
     return url.url_id, 201
 
@@ -66,8 +62,7 @@ def update_by_id(url_id=None, new_url=None):
     if not is_valid_URL(new_url.original_url):
         return 'Invalid Url', 400
 
-    url_db.update({'original_url': new_url.original_url,
-                   'shortened_url': shorten_url(new_url.original_url)}, query)
+    url_db.update({'original_url': new_url.original_url}, query)
 
     return url_db.search(query)
 

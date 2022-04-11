@@ -13,7 +13,7 @@ from swagger_server.test import BaseTestCase
 class TestController(BaseTestCase):
 
     base_path = 'http://localhost:8080/'
-    example_id = '5a1f7a7e-92c0-4268-854f-9760606067fd'
+    example_id = '8a2202c0'
 
     def test_root_delete(self):
         """Test case for root_delete
