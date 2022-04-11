@@ -74,8 +74,8 @@ def update_by_id(url_id=None, new_url=None):
 
 def delete_by_id(url_id):
     ShortenedUrl = Query()
-    student = url_db.get(ShortenedUrl.url_id == url_id)
-    if not student:
+    url = url_db.get(ShortenedUrl.url_id == url_id)
+    if not url:
         return 'Not found', 404
     url_db.remove(ShortenedUrl.url_id == url_id)
     return url_id
