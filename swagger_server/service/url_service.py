@@ -28,7 +28,6 @@ def add(url=None):
     if res:
         return 'Url already exists', 409
 
-    # Generate unique url for length 7
     short_url = shorten_url(url.original_url)
     url.url_id = str(uuid.uuid4())
     url.shortened_url = short_url
